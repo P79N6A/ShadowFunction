@@ -1,0 +1,40 @@
+{
+  "name": "shadow-function",
+  "version": "1.0.17",
+  "description": "ioing lib - shadow Function, worker Function",
+  "keywords": [
+    "safe-eval",
+    "snadbox",
+    "sandboxFunction",
+    "shadowFunction",
+    "workerFunction"
+  ],
+  "main": "src/index.js",
+  "scripts": {
+    "watch":"webpack --watch",
+    "build": "webpack --config=webpack.config.js && webpack --config=webpack.config.js --dev",
+    "rollup": "rollup -c rollup.config.js",
+    "start": "webpack-dev-server --open"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.5",
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-plugin-syntax-dynamic-import": "^6.18.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-runtime": "^6.26.0",
+    "git-rev-sync": "^1.9.1",
+    "rollup": "^0.51.8",
+    "rollup-plugin-babel": "^3.0.7",
+    "rollup-plugin-node-resolve": "^3.3.0",
+    "uglifyjs-webpack-plugin": "^1.2.7",
+    "webpack": "^4.16.2",
+    "webpack-cli": "^3.1.0",
+    "webpack-dev-server": "^3.1.10"
+  },
+  "author": "lien",
+  "license": "MIT"
+}

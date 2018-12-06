@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>shadowFunction test</title>
+
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="write" />
+<meta name="format-detection" content="telephone=no" />
+
+<meta name="description" content="IOING.js - 媲美原生交互体验的前端复引擎">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="IOING.js">
+<meta property="og:description" content="IOING.js - 媲美原生交互体验的前端复引擎">
+<meta property="og:image" content="logo.png">
+
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" sizes="192x192" href="logo.png">
+<link rel="apple-touch-icon" sizes="192x192" href="logo.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="IOING">
+<meta name="theme-color" content="#ffffff">
+<!-- <meta http-equiv="Content-Security-Policy" content="script-src 'self'; object-src 'none'; style-src cdn.example.org third-party.org; child-src https:"> -->
+
+
+<script src="./dist/test.dev.js"></script>
+
+<style>
+  body {
+    width: 600px;
+    margin: auto;
+  }
+  textarea {
+    width: 600px;
+    height: 100px;
+  }
+</style>
+</head>
+<body>
+  <h2>安全执行器 BlackFunction / shadowFunction</h2>
+  <p>安全执行不可信代码或第三方代码，可执行基本js逻辑，但调用"location, top, document.cookie，alert, console"等不可达成预期效果，可避免第三方脚本进行页面攻击或盗取用户信息。</p>
+  <p>其他限制还包括：防止错误崩溃，防止发起 ajax 和其他请求数据方法，防止读取父级别元素和对象等。</p>
+
+  <h3>import:</h3>
+  <textarea>
+    import { Sandbox, ShadowFunction, sandbox, sandboxWindow, sandboxDocument, sandboxFunction, blackSandbox, shadowWindow, shadowDocument, safeEval } from './sandbox/index'
+    import { jsonp } from './jsonp/index'
+    import { workerFunction } from './worker/index'
+  </textarea>
+
+  <h1>着重介绍一下 BlackFunction</h1>
+  <p>shadowFunction 能立即将字符串以安全的javascript进行执行，但当传递外部参数进去时依然有很高的风险，而 BlackFunction 是专门来防范这个风险的。比如通过 BlackFunction 传递的对象将无法被修改或只能修改白名单对象，并且无法访问对象的‘protoType’、‘__poroto__’ 、‘constructor’ 等，并在第三方代码访问这些不安全属性时进行拦截并统计该行为。</p>
+
+  <h3>例子:</h3>
+  <p style="color: #999999">复制内容在控制台执行</p>
+
+  <p>执行 alert 方法限制</p>
+  <textarea>seval('alert(1)')</textarea>
+  <p>top 对象 null</p>
+  <textarea>seval('window.top')</textarea>
+  <p>获取 cookie 为 null</p>
+  <textarea>seval('document.cookie')</textarea>
+  <p>跳转操作无效</p>
+  <textarea>seval('location.href = "www.taobao.com"')</textarea>
+  <p>打开新窗口无效</p>
+  <textarea>seval('open("www.taobao.com")')</textarea>
+  <p>历史记录操作无效</p>
+  <textarea>seval('history.back()')</textarea>
+  <p>localStorage 为 null</p>
+  <textarea>seval('window.localStorage')</textarea>
+  <p>BlackFunction</p>
+  <textarea>
+    new BlackFunction('this.console.log(this.a.prototype)')({a:{p:33},console:console})(function (value, key, type, newValue) { console.log(key)})
+  </textarea>
+  <p>将外部对象添加到执行上下文</p>
+  <textarea>new ShadowFunction('getId', 'return getId(1)')(id => id)</textarea>
+  <p>沙盒jsonp 加载, 可隔离错误影响，但并不受安全执行器限制，网络异常时自动重试</p>
+  <textarea>seval('jsonp({
+    url: "http://suggest.taobao.com/sug?code=utf-8&q=iphoneX"
+  }).then((data) => {
+    console.log("jsonp:", data)
+  })')</textarea>
+  <p>沙盒jsonp 加载, 网络异常时自动重试，错误异常时重试</p>
+  <textarea>seval('jsonp({
+    url: "http://suggest.taobao.com/sug?code=utf-8&q=iphoneX",
+    polls: 3
+  }).then((data) => {
+    console.log("jsonp:", data)
+  })')</textarea>
+  <div id="body" style="width:100%;height:100px">preact body</div>
+</body>
+</html>
